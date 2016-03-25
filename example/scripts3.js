@@ -2,7 +2,7 @@ $(function () {
     $('.pobieranieCzasu').on('click', function () {
         //tutaj stanie sie cos jak klikne button o klasie pobieranieCzasu
         $.ajax({
-            url: 'http://localhost:8888/api.php',
+            url: 'http://localhost:8888/books.php',
             type: 'GET',//pobierz metodą get
             dataType: 'json',
             success: function (result) {

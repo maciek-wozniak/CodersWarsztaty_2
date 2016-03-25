@@ -7,7 +7,7 @@ $(function () {
         //var dataToSend = {timestamp: toCalc};
         //tutaj sstanie sie cos jak klikne button o klasie pobieranieCzasu
         $.ajax({
-            url: 'api.php',
+            url: 'books.php',
             type: 'POST',//pobierz metodą get
             data: dataToSend,
             dataType: 'json',
