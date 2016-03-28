@@ -89,13 +89,8 @@ Class Book {
         return ($this->conn->query($sqlUpdateBook));
     }
 
-    public function deleteFromDb($id = null) {
-        if ($id == null) {
-            $sqlDelete = 'DELETE FROM books';
-        }
-        else if (is_numeric($id)) {
-            $sqlDelete = 'DELETE FROM books WHERE id='.$id;
-        }
+    public function deleteFromDb($id ) {
+        $sqlDelete = 'DELETE FROM books WHERE id='.$id;
         return ($this->conn->query($sqlDelete));
     }
 
