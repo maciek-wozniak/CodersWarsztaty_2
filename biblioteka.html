@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteka z moimi książkami</title>
+    <script src="http://code.jquery.com/jquery-2.2.2.js"> </script>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+
+<div id="info"></div>
+
+Ilość zapytań: <span id="countActions">0</span>
+<p>Sukcesy: <span id="successAction">0</span></p>
+<p>Porażki: <span id="errorAction">0</span></p>
+
+<form>
+Tytuł książki <input type="text" name="bookName" id="bookName" placeholder="Enter book name"><br>
+    Autor książki <input type="text" name="bookAuthor" id="bookAuthor" placeholder="Enter book author"><br>
+    Opis książki <input type="text" name="bookDesc" id="bookDesc" placeholder="Enter book desc"><br>
+    <input type="Submit" id="btnAddBook" value="Dodaj">
+
+
+
+</form>
+
+<div id="bookshelf"></div>
+
+</body>
+</html>

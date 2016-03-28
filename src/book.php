@@ -3,13 +3,11 @@
 
 Class Book {
 
-
     private $conn;
     private $id;
     private $name;
     private $author;
     private $description;
-
 
     public function __construct(mysqli $conn, $id = null, $name = null, $author = null, $desc = null) {
 
@@ -25,8 +23,8 @@ Class Book {
         return $this->id;
     }
 
-    public function setId($id) {
-        $this->id = $id;
+    private function setId($id) {
+
     }
 
     public function getName() {
@@ -72,17 +70,33 @@ Class Book {
         return $booksWeNeed;
     }
 
-
-    public function create(mysqli $conn, $name, $author, $description) {
-
+    public function createdAndAddedBook() {
+        if ($this->id == -1) {
+            $addBookSql = 'INSERT INTO books (name, author, description)
+                  values ("'.$this->name.'", "'.$this->author.'", "'.$this->description.'")';
+        }
+        if ($this->conn->query($addBookSql)) {
+            $this->setId($this->conn->insert_id);
+            return true;
+        }
+        return false;
     }
 
-    public function update($conn, $id, $name, $author, $description) {
+    public function update($id, $name, $author, $description) {
+        $sqlUpdateBook = 'UPDATE books SET name="'.$name.'",
+                            author="'.$author.'", description="'.$description.'" WHERE id='.$id;
 
+        return ($this->conn->query($sqlUpdateBook));
     }
 
-    public function deleteFromDb(mysqli $conn, $id = null) {
-
+    public function deleteFromDb($id = null) {
+        if ($id == null) {
+            $sqlDelete = 'DELETE FROM books';
+        }
+        else if (is_numeric($id)) {
+            $sqlDelete = 'DELETE FROM books WHERE id='.$id;
+        }
+        return ($this->conn->query($sqlDelete));
     }
 
 }
