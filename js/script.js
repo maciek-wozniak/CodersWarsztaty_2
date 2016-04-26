@@ -1,6 +1,4 @@
-
-
-$(function() {
+$(function () {
 
     // Na dzień dobry wczytujemy książki z bazy
     loadBooks();
@@ -10,18 +8,18 @@ $(function() {
 
 
     // Edycja książki
-    $('#bookshelf').on('click', '.bookEdit', function() {
-        loadBookToFromForEditing($(this).parent().prev().data('id'));
+    $('#bookshelf').on('click', '.bookEdit', function () {
+        loadBookToFromForEditing($(this).prev().prev().data('id'));
     });
 
     // Ładowanie książki do formularza żeby ją później edytować
-    function loadBookToFromForEditing(id){
+    function loadBookToFromForEditing(id) {
         var nameInput = $('#bookName');
         var descInput = $('#bookDesc');
         var authorInput = $('#bookAuthor');
 
         $.ajax({
-            url: 'api/books.php?desc='+id,
+            url: 'api/books.php?desc=' + id,
             type: 'GET',
             dataType: 'json',
             success: function (book) {
@@ -33,17 +31,23 @@ $(function() {
                     $('#btnAddBook').toggle();
 
                     // dodanie buttonow do zmiany danych, lub opuszczenie trybu edytowania ksiazki
-                    var newBtns = '<input type="hidden" name="bookId" value="'+id+'">';
-                    newBtns += '<input type="Submit" id="btnEditBook" value="Zmień">';
-                    newBtns += '<input type="Submit" id="cancelEditing" value="Anuluj">';
-                    $('form').append(newBtns);
+                    var newBtns = '<input type="hidden" name="bookId" value="' + id + '">';
+                    newBtns += '<input type="Submit" id="btnEditBook" value="Zmień" class="btn btn-success btn-xs"> ';
+                    newBtns += '<input type="Submit" id="cancelEditing" value="Anuluj" class="btn btn-primary btn-xs">';
+                    if ($('form').find('#btnEditBook').length == 0) {
+                        $('form').append(newBtns);
+                    }
+                    else {
+                        $('#btnAddBook').toggle();
+                        endEditingBook();
+                    }
                 }
             },
-            error: function() {
+            error: function () {
                 addErrorAction();
                 console.log('Wystąpił błąd');
             },
-            complete: function() {
+            complete: function () {
                 addAction();
                 console.log('Zakończono request');
             }
@@ -51,7 +55,7 @@ $(function() {
     }
 
     // Kliknięcie edytuj - zmiana danych książki
-    $('form').on('click', '#btnEditBook', function(e) {
+    $('form').on('click', '#btnEditBook', function (e) {
         e.preventDefault();
         var formData = $('form').serialize();
 
@@ -71,11 +75,11 @@ $(function() {
                 endEditingBook();
                 loadBooks();
             },
-            error: function() {
+            error: function () {
                 addErrorAction();
                 console.log('Wystąpił błąd');
             },
-            complete: function() {
+            complete: function () {
                 addAction();
                 console.log('Zakończono request');
             }
@@ -83,7 +87,7 @@ $(function() {
     });
 
     // Anulowanie edytowania książki
-    $('form').on('click', '#cancelEditing', function(e){
+    $('form').on('click', '#cancelEditing', function (e) {
         e.preventDefault();
         endEditingBook();
     });
@@ -98,13 +102,13 @@ $(function() {
     }
 
     // Wyszukiwanie informacji o książce - korzystamy z api google
-    $('#bookshelf').on('click', '.bookSearch', function() {
+    $('#bookshelf').on('click', '.bookSearch', function () {
         var bookTitle = $(this).parent().prev().prev().text();
-        bookTitle = bookTitle.substr(7, bookTitle.length-1);
-        var bookDiv = $(this).parent().parent();
+        bookTitle = bookTitle.substr(7, bookTitle.length - 1);
+        var bookDiv = $(this).parent().prev();
 
         $.ajax({
-            url: 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q='+bookTitle,
+            url: 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + bookTitle,
             type: 'GET',
             dataType: 'jsonp',
             crossDomain: true,
@@ -116,8 +120,8 @@ $(function() {
                     for (var a = 0; a < info.length; a++) {
                         var searchBook = info[a];
 
-                        var searchDiv = '<div class="well">'+searchBook.titleNoFormatting;
-                        searchDiv += ': <a href="'+searchBook.unescapedUrl+'">'+searchBook.content+'</a></div>';
+                        var searchDiv = '<div class="well">' + searchBook.titleNoFormatting;
+                        searchDiv += ': <a href="' + searchBook.unescapedUrl + '">' + searchBook.content + '</a></div>';
                         var jqDiv = $(searchDiv);
 
                         bookDiv.append(jqDiv);
@@ -147,20 +151,27 @@ $(function() {
                 addSuccessAction();
                 if (books.length > 0) {
                     // czyścimy diva
-                    $('#bookshelf').html('');
+                    $('#bookshelf').html('<p>Lista książek na półce, kliknij w tytuł, aby wyświetlić szczegóły:</p>');
                     for (var a = 0; a < books.length; a++) {
                         var singleBook = books[a];
 
                         if (singleBook.id == 666) {
-                            console.log('Przykro nam, ale nie możemy wyświetlić informacji o tej książce id:'+singleBook.id);
+                            console.log('Przykro nam, ale nie możemy wyświetlić informacji o tej książce id:' + singleBook.id);
                             continue;
                         }
 
-                        var bookDiv = '<div class="singleBook panel panel-default">';
-                        bookDiv += '<div class="bookTitle" data-id="' + singleBook.id + '">Tytuł: ' + singleBook.name + '</div>';
+                        var bookDiv = '<div class="panel-group">';
+                        bookDiv += '<div class="singleBook panel panel-primary">';
+                        bookDiv += '<div class="bookTitle panel panel-heading" data-id="' + singleBook.id + '">Tytuł: ' + singleBook.name + '</div>';
+
+                        bookDiv += '<div class="panel-body">';
                         bookDiv += '<div class="bookAuthor" data-id="' + singleBook.id + '" style="display: none;"></div>';
-                        bookDiv += '<div><a class="bookDelete" data-id="' + singleBook.id + '">Usuń</a> <a class="bookSearch">Szukaj</a> <a class="bookEdit">Edytuj</a></div>';
-                        bookDiv += '<div class="bookDesc" data-id="' + singleBook.id + '" style="display: none;"></div></div><br>';
+                        bookDiv += '<div class="bookDesc" data-id="' + singleBook.id + '" style="display: none;"></div>';
+                        bookDiv += '</div>';
+
+                        bookDiv += '<div class="panel-footer"><a class="bookDelete btn btn-xs btn-danger" data-id="' + singleBook.id + '">Usuń</a> <a class="bookSearch btn btn-xs btn-success">Szukaj w api google</a> <a class="bookEdit btn btn-xs btn-info">Edytuj</a></div>';
+
+                        bookDiv += '</div></div><br>';
                         var jqDiv = $(bookDiv);
 
                         $('#bookshelf').append(jqDiv);
@@ -180,14 +191,14 @@ $(function() {
     }
 
     // Usuwanie książek
-    $('#bookshelf').on('click', '.bookDelete', function(){
+    $('#bookshelf').on('click', '.bookDelete', function () {
         var id = $(this).data('id');
 
         $.ajax({
             url: 'api/books.php',
             type: 'DELETE',
             dataType: 'json',
-            data: 'bookId='+id,
+            data: 'bookId=' + id,
             success: function (result) {
                 addSuccessAction();
                 if (result == 'ok') {
@@ -197,11 +208,11 @@ $(function() {
                     loadBooks();
                 }
             },
-            error: function() {
+            error: function () {
                 addErrorAction();
                 console.log('Wystąpił błąd');
             },
-            complete: function() {
+            complete: function () {
                 addAction();
                 console.log('Zakończono request');
             }
@@ -211,10 +222,10 @@ $(function() {
     });
 
     // wczytywanie danych o książce (autora i opisu) po kliknieciu na tytul ksiazki
-    $('#bookshelf').on('click', '.bookTitle', function(){
+    $('#bookshelf').on('click', '.bookTitle', function () {
         var ajaxUrl = 'api/books.php?desc=' + $(this).data('id');
-        var descDiv = $(this).next().next().next();
-        var authorDiv = $(this).next();
+        var descDiv = $(this).next().children(':nth-child(2)');
+        var authorDiv = $(this).next().children(':first');
 
         $.ajax({
             url: ajaxUrl,
@@ -223,15 +234,15 @@ $(function() {
             success: function (book) {
                 addSuccessAction();
                 if (book.length > 0) {
-                    authorDiv.fadeIn('slow').text('Autor: '+book[1]);
+                    authorDiv.fadeIn('slow').text('Autor: ' + book[1]);
                     descDiv.fadeIn('slow').text(book[0]);
                 }
             },
-            error: function() {
+            error: function () {
                 addErrorAction();
                 console.log('Wystąpił błąd');
             },
-            complete: function() {
+            complete: function () {
                 addAction();
                 console.log('Zakończono request');
             }
@@ -241,7 +252,7 @@ $(function() {
 
 
     // Dodawanie książki do bazy
-    $('#btnAddBook').click(function(e){
+    $('#btnAddBook').click(function (e) {
         var bkAuthor = $('#bookAuthor').val();
         var bkName = $('#bookName').val();
         var bkDesc = $('#bookDesc').val();
@@ -254,7 +265,7 @@ $(function() {
         $.ajax({
             url: 'api/books.php',
             type: 'POST',
-            data: 'bookAuthor='+bkAuthor+'&bookName='+bkName+'&bookDesc='+bkDesc+'',
+            data: 'bookAuthor=' + bkAuthor + '&bookName=' + bkName + '&bookDesc=' + bkDesc + '',
             dataType: 'json',
             success: function (result) {
                 addSuccessAction();
@@ -268,11 +279,11 @@ $(function() {
                     loadBooks();
                 }
             },
-            error: function() {
+            error: function () {
                 addErrorAction();
                 console.log('Wystąpił błąd');
             },
-            complete: function() {
+            complete: function () {
                 addAction();
                 console.log('Zakończono request');
             }
@@ -287,21 +298,21 @@ $(function() {
         var actualNumber = localStorage.getItem('allAction');
         //var actualNumber = parseInt($('#countActions').text(),10);
         $('#countActions').text(++actualNumber);
-        localStorage.setItem('allAction',actualNumber);
+        localStorage.setItem('allAction', actualNumber);
     }
 
     function addErrorAction() {
         var actualNumber = localStorage.getItem('errorAction');
         //var actualNumber = parseInt($('#errorAction').text(),10);
         $('#errorAction').text(++actualNumber);
-        localStorage.setItem('errorAction',actualNumber);
+        localStorage.setItem('errorAction', actualNumber);
     }
 
     function addSuccessAction() {
         var actualNumber = localStorage.getItem('successAction');
         //var actualNumber = parseInt($('#successAction').text(),10);
         $('#successAction').text(++actualNumber);
-        localStorage.setItem('successAction',actualNumber);
+        localStorage.setItem('successAction', actualNumber);
     }
 
 });
