@@ -152,7 +152,7 @@ $(function() {
                         var singleBook = books[a];
 
                         if (singleBook.id == 666) {
-                            alert('Przykro nam, ale nie możemy wyświetlić informacji o tej książce id:'+singleBook.id);
+                            console.log('Przykro nam, ale nie możemy wyświetlić informacji o tej książce id:'+singleBook.id);
                             continue;
                         }
 
