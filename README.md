@@ -13,7 +13,7 @@ Website was created using:
 - AJAX with JSON data type
 
 Implemented features:
-- Adding, deleting, editing book
-- After click on book's title, book description and author will be shown
+- Add, delete, edit book
+- Description and author will be shown after clicking on book's title
 - Counter of ajax actions
 - Searching information about book using google api
